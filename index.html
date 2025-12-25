@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>致 LXW ❤️ 圣诞故事书</title>
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@300;500&display=swap" rel="stylesheet">
+  
+  <!-- ✅ 引入 EmailJS -->
+  <script type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+  </script>
+  <script type="text/javascript">
+    (function(){
+      emailjs.init("US_Rmmi-EkRTHl4bO"); // ← ← ← 替换为你的 Public Key
+    })();
+  </script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Noto Sans SC", sans-serif;
+      background: linear-gradient(135deg, #0a1929, #1a3a4a, #2c5364);
+      color: #333;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      padding: 1rem;
+    }
+    #snowflakes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* 开场 */
+    #intro {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: white;
+      animation: fadeIn 2s ease-out;
+    }
+    #intro h1 {
+      font-family: "Ma Shan Zheng", cursive;
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 15px rgba(255,255,255,0.6);
+    }
+    #start-btn {
+      margin-top: 2rem;
+      padding: 0.8rem 2rem;
+      background: #d4af37;
+      color: #000;
+      border: none;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+    }
+    #start-btn:hover {
+      background: #ff6b6b;
+      transform: scale(1.05);
+    }
+
+    /* 主内容 */
+    #main {
+      display: none;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .btn-small {
+      padding: 0.4rem 1rem;
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+    .btn-small:hover {
+      background: rgba(212,175,55,0.5);
+    }
+
+    /* 故事书 */
+    .book-slider {
+      position: relative;
+      width: 100%;
+      height: 500px;
+      overflow: hidden;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+      margin: 2rem auto;
+    }
+    .pages-container {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    .page {
+      min-width: 100%;
+      height: 100%;
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: white;
+    }
+    .cover {
+      background: linear-gradient(135deg, #8B0000, #A52A2A);
+      color: white;
+      font-family: "Ma Shan Zheng", cursive;
+      font-size: 2.5rem;
+    }
+    .page-content {
+      line-height: 1.7;
+      font-size: 1.1rem;
+      max-width: 600px;
+    }
+
+    .nav-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 1rem;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(212,175,55,0.4);
+      cursor: pointer;
+    }
+    .dot.active {
+      background: #d4af37;
+    }
+
+    #close-book {
+      margin-top: 1.5rem;
+      padding: 0.8rem 2rem;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      display: none;
+    }
+
+    /* === 抽卡互动区（已优化）=== */
+    #draw-card-area {
+      margin: 3rem 0;
+      background: linear-gradient(135deg, #8B0000, #A52A2A);
+      border-radius: 24px;
+      padding: 3rem 2rem;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
+      height: 500px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      font-family: "Ma Shan Zheng", cursive;
+    }
+
+    .card-slot {
+      width: 180px;
+      height: 250px;
+      background: url('https://cdn.jsdelivr.net/gh/love-lxw/love-lxw@main/images/card-bg.png') center/cover no-repeat;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      z-index: 1;
+      border: 3px solid gold;
+      backdrop-filter: blur(2px);
+      padding: 1rem;
+    }
+    .card-slot:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 12px 30px rgba(255,215,0,0.4);
+    }
+    .card-slot span {
+      font-size: 1.2rem;
+      color: white;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+      line-height: 1.4;
+    }
+
+    /* 全局提示 */
+    #wish-message {
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, #8B0000, #A52A2A);
+      color: white;
+      padding: 1.2rem 1.8rem;
+      border-radius: 20px;
+      font-family: "Ma Shan Zheng", cursive;
+      font-size: 1.4rem;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1000;
+      transition: opacity 0.4s;
+      white-space: pre-line;
+      text-align: center;
+      max-width: 85vw;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      border: 2px solid gold;
+      backdrop-filter: blur(4px);
+    }
+
+    /* 横屏提示 */
+    #rotate-hint {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: #0a1929;
+      color: white;
+      display: none;
+      z-index: 2000;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 1.4rem;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    /* 模态框通用样式 */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 3100;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      max-width: 90vw;
+      width: 360px;
+      text-align: center;
+      font-family: 'Noto Sans SC';
+    }
+    .modal-content h3 {
+      margin-bottom: 1rem;
+    }
+    .close-btn {
+      background: #aaa;
+      color: white;
+      border: none;
+      padding: 0.5rem 1.2rem;
+      border-radius: 20px;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+
+    /* 背包红点 */
+    .backpack-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: red;
+      color: white;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      font-size: 0.7rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    /* 背包卡片容器 */
+    .backpack-card {
+      width: 60px;
+      height: 80px;
+      background: white;
+      border: 2px solid gold;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-size: 1.4rem;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .backpack-card .count {
+      margin-top: 0.2rem;
+      font-weight: bold;
+      font-size: 0.85rem;
+      line-height: 1;
+    }
+
+    .backpack-card .type {
+      font-size: 0.6rem;
+      color: #555;
+      line-height: 1;
+      margin-top: 0.1rem;
+    }
+
+    /* 彩蛋心动画 */
+    .secret-heart.revealed {
+      animation: popIn 0.4s ease-out;
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 600px) {
+      .page { padding: 1.5rem; height: 450px; }
+      .cover { font-size: 2rem; }
+      .page-content { font-size: 1rem; }
+      .book-slider { height: 450px; }
+      #wish-message { font-size: 1.1rem; padding: 0.8rem 1.5rem; }
+      
+      #draw-card-area { 
+        height: 450px; 
+        padding: 2rem 1.5rem; 
+      }
+      .card-slot { 
+        width: 140px; 
+        height: 200px; 
+        font-size: 1rem; 
+      }
+      
+      .toolbar { justify-content: center; }
+      .btn-small { margin: 0.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 飘雪 -->
+  <div id="snowflakes"></div>
+
+  <!-- 横屏提示 -->
+  <div id="rotate-hint">
+    <div>📱 为了更好的体验，请将手机横过来！</div>
+    <div style="margin-top: 1rem; font-size: 2.5rem;">↔️</div>
+  </div>
+
+  <!-- 开场 -->
+  <div id="intro">
+    <h1>致 <span id="heart-icon" style="cursor: pointer;">❤️</span>LXW </h1>
+    <p style="color:white; opacity:0.9; max-width:600px; margin:0 auto 2rem;">
+      这是一个只属于我们两人的故事。
+    </p>
+    <button id="start-btn">翻开第一页 📖</button>
+    <p id="hint">（嘿嘿!宝宝找找小彩蛋!!）</p>
+  </div>
+
+  <!-- 主内容 -->
+  <div id="main">
+    <!-- ✅ 工具栏：返回首页 + 切换按钮 + 音乐 -->
+    <div class="toolbar">
+      <button class="btn-small" onclick="goHome()">🏠 返回首页</button>
+      <button class="btn-small" id="open-book-btn" onclick="openBookFromToolbar()" style="display:none;">📖 打开故事书</button>
+      <button class="btn-small" id="open-card-btn" onclick="openCardFromToolbar()" style="display:none;">🎁 抽取祝福</button>
+      <button class="btn-small" id="music-btn" onclick="toggleMusic()">🔇 暂停音乐</button>
+    </div>
+
+    <!-- 故事书部分 -->
+    <div id="book-section">
+      <div class="book-slider" id="bookSlider">
+        <div class="pages-container" id="pagesContainer">
+          <div class="page cover">
+            <div>我们的故事</div>
+            <div style="font-size:1.2rem; margin-top:1rem;">—— 致我最爱的 LXW</div>
+          </div>
+          <div class="page">
+            <div class="page-content">
+              <h2>初遇</h2>
+              <p>2025年10月19日，缘分真的好奇妙，凌晨我还在发朋友圈感叹。</p>
+              <p>中午就在Soul上遇到了你。</p>
+              <p>当时以为只是寻常的一天，但是慢慢的,心里多了一些期待。</p>
+              <p>OS:哼,肯定是你给我灌了迷魂汤。</p>
+            </div>
+          </div>
+          <div class="page">
+            <div class="page-content">
+              <h2>第一次通话</h2>
+              <p>2025年10月24日，有个倒霉蛋贴钱去和帽子叔叔谈话还要被某人贴脸嘲笑。</p>
+              <p>太生气了，气得我脸红心跳的。不对啊，我脸红什么。</p>
+              <p>OS：其实也挺幸运的，第一次听到了宝宝的声音，怎么有这么好听的声音，想听一辈子。</p>
+            </div>
+          </div>
+          <div class="page">
+            <div class="page-content">
+              <h2>寻人启事</h2>
+              <p>2025年10月26日，忍不了，你的什么信息都不知道。</p>
+              <p>天天就知道睡觉，也不联系我，不会丢了吧。</p>
+              <p>有点烦，去贴个寻人启事。</p>
+              <p>OS：她叫我宝宝欸，这样就行了嘛，我有这么好收买嘛。</p>
+              <p>                      ----好吧，确实可以。</p>
+              <p>后记：其实还有一个好收买的笨蛋，一个优酷会员就收买了。没见过世面的样子，勉强收留一下吧，不然遇到坏人不知道得被骗成什么样呢。</p>
+            </div>
+          </div>
+          <div class="page">
+            <div class="page-content">
+              <h2>爱的承诺</h2>
+              <p>2025年10月29日，这人太坏了，我淋了雨都不安慰我，还搁那笑我。</p>
+              <p>你等着,我超级记仇的。</p>
+              <p>她居然问我愿不愿意伺候她。</p>
+              <p>一天天的就知道吃和睡，呵呵，你说呢。</p>
+              <p>你怎么知道我喜欢养居的，这么可爱的居居,当然要养一辈子了啦。</p>
+            </div>
+          </div>
+          <div class="page">
+            <div class="page-content">
+              <h2>懂点事</h2>
+              <p>2025年11月11日，今天宝宝生理期，好心疼宝宝</p>
+              <p>完全不了解有什么禁忌啊，赶快去查一下要注意些什么。</p>
+              <p>但是每个人不一样啊，宝宝周期是多少勒，不好意思问呢。</p>
+              <p>先记录一下日期吧，下次提醒一下宝宝先准备好暖宝宝。</p>
+            </div>
+          </div>
+          <div class="page">
+            <div class="page-content">
+              <h2>说早安</h2>
+              <p>2025年11月16日，今天宝宝说以后要每天都要说早安。</p>
+              <p>嘿嘿，挺开心的，其实不是我不说啦，只是我怕宝宝觉得我烦人。</p>
+              <p>这下可以光明正大的和宝宝说早安啦!啦啦啦(～￣▽￣)～</p>
+            </div>
+          </div>
+          <div class="page">
+            <div class="page-content">
+              <h2>30Day</h2>
+              <p>2025年11月18日，30天，很快啊，怎么就这么快呢，都认识一个月了。</p>
+              <p>好想找宝宝聊天呀，等晚上吧,宝宝应该也很想找我吧。</p>
+              <p>对了，我去折个玫瑰，不对劲，怎么这么难，顶不住了。</p>
+              <p>时间快到了换个千纸鹤吧，来不及了，来不及了，快快快</p>
+              <p>什么叫不能打电话;你还玩那么开心。</p>
+              <p>我一点都没有红温也没有不开心，一点都没有!</p>
+              <p>蒜鸟蒜鸟,宝宝开心就好。</p>
+            </div>
+          </div>
+          <div class="page">
+            <div class="page-content">
+              <h2>没招了</h2>
+              <p>2025年12月4日，今天阶段汇报好累呀，不知不觉也这么久啦。</p>
+              <p>怎么感觉自己也越来越依赖宝宝了。</p>
+              <p>电话断了，又不回我消息，算了睡觉。</p>
+              <p>算不了一点，躺床上睡不着，翻来覆去睡不着，起来发骚扰短信了。</p>
+              <p>万万没想到，我居然也会撒娇的，真是没招了。</p>
+            </div>
+          </div>
+          <div class="page">
+            <div class="page-content">
+              <h2>漂亮宝宝</h2>
+              <p>2025年12月13日，赞美上帝，今天美神降临了！</p>
+              <p>天呐！我宝宝怎么这么好看。</p>
+              <p>嘿嘿，想亲一口,骗你的，不止一口。</p>
+              <p>嘿嘿，想要好多好多宝宝的照片。</p>
+            </div>
+          </div>
+          <div class="page">
+            <div class="page-content">
+              <h2>冬至漂流记</h2>
+              <p>2025年12月20日，有个笨蛋啥都不管，也啥都不问直接就飞了一千多公里。</p>
+              <p>下飞机，第一感受好热，看了一眼手机，心凉了。</p>
+              <p>闭门羹真难吃，算了，来都来了去海边看看吧。</p>
+              <p>没意思，怎么都成双入对的，这光也是，刺瞎我得了，反正也等不到消息。</p>
+              <p>为什么不接电话，吓死了，吓死了。总算还好，宝宝没太生气，溜之大吉。</p>
+              <p>故事总结：嗯，你喜欢的不代表所有人都喜欢，下次还是商量着来。</p>
+              <p>OS:抖音你罪大恶极，来之前一直给我推异地恋奔现，给我整的热血沸腾的，要走了你还追着我杀。</p>
+            </div>
+          </div>
+          <div class="page">
+            <div class="page-content">
+              <h2>今天</h2>
+              <p>我想告诉宝宝：其实圣诞节对我来说无所谓啦,认识宝宝的每一天我都很开心，我想一直一直和宝宝在一起。所以无论是哪一天，我都想和宝宝一起过。</p>
+            </div>
+          </div>
+          <div class="page">
+            <div class="page-content">
+              <h2>未完待续</h2>
+              <p>我们的故事，才刚刚开始 
+                <span class="secret-heart" data-num="5">❤️</span>
+                <span class="secret-heart" data-num="2">❤️</span>
+                <span class="secret-heart" data-num="0">❤️</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-dots" id="navDots"></div>
+      <button id="close-book" onclick="closeBook()">📖 合上故事书</button>
+    </div>
+
+    <!-- 抽卡区域 -->
+    <div id="card-section" style="display:none;">
+      <div id="draw-card-area">
+        <div class="card-slot" onclick="drawCard()">
+          <span>点击抽取圣诞祝福</span>
+        </div>
+      </div>
+      <p id="hint" style="
+        color: #ffd700;
+        margin-top: 1rem;
+        font-size: 1rem;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+        font-family: 'Noto Sans SC', sans-serif;
+      ">集齐所有祝福后，可许愿哦！</p>
+
+      <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
+        <button class="btn-small" onclick="showBackpack()" style="background: rgba(255,215,0,0.2); color: #ffd700; position: relative;">
+          🎒 查看背包
+          <span id="backpack-badge" class="backpack-badge" style="display:none;">!</span>
+        </button>
+        <button class="btn-small" onclick="showWishHistory()" style="background: rgba(255,215,0,0.2); color: #ffd700;">
+          💭 查看愿望
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 愿望表单 -->
+  <div id="wish-form-modal" class="modal">
+    <div class="modal-content">
+      <h3>✨ 写下你的圣诞愿望</h3>
+      <textarea id="user-wish" rows="4" placeholder="说出你的愿望,说不定哪天就实现了捏,嘿嘿"></textarea>
+      <br>
+      <button onclick="submitWish()" style="
+        background: #d4af37; color: black; border: none; padding: 0.6rem 1.5rem;
+        border-radius: 20px; font-weight: bold; cursor: pointer;
+      ">发送愿望 💌</button>
+      <button onclick="closeWishForm()" class="close-btn">取消</button>
+    </div>
+  </div>
+
+  <!-- 背包模态框 -->
+  <div id="backpack-modal" class="modal">
+    <div class="modal-content">
+      <h3>🎒 你的圣诞祝福背包</h3>
+      <div id="backpack-content" style="
+        margin: 1.5rem 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 1rem;
+      "></div>
+      <button id="compose-wish-btn" class="btn-small" style="
+        background: #d4af37; color: black; margin-top: 1rem; display: none;
+      " onclick="showWishForm()">✨ 合成愿望</button>
+      <button onclick="closeBackpack()" class="close-btn">关闭</button>
+    </div>
+  </div>
+
+  <!-- 愿望历史模态框 -->
+  <div id="wish-history-modal" class="modal">
+    <div class="modal-content" style="max-height: 70vh; overflow-y: auto;">
+      <h3>💭 你的圣诞愿望清单</h3>
+      <div id="wish-history-content" style="margin: 1.5rem 0; text-align: left;"></div>
+      <button onclick="closeWishHistory()" class="close-btn">关闭</button>
+    </div>
+  </div>
+
+  <!-- 提示层 -->
+  <div id="wish-message"></div>
+
+  <!-- 背景音乐（已修复） -->
+ <audio id="bgm" loop>
+  <source src="christmas-piano.mp3" type="audio/mpeg">
+</audio>
+
+  <script>
+  // ========== 初始化数据 ==========
+  const blessingTypes = ['幸福卡', '爱情卡', '旅行卡', '惊喜卡', '幸运卡', '平安卡', '快乐卡'];
+  let backpack = {};
+  let wishesSent = [];
+  let hasShownWishPrompt = false;
+  let revealedHearts = new Set(); // 用于记录已揭示的心
+
+  const cardIcons = {
+    '幸福卡': '🌟',
+    '爱情卡': '💖',
+    '旅行卡': '✨',
+    '惊喜卡': '🎁',
+    '幸运卡': '🍀',
+    '平安卡': '🕯️',
+    '快乐卡': '🎵'
+  };
+
+  const blessingMessages = {
+    '幸福卡': '2025年，所有努力都会有回报。',
+    '爱情卡': '我们的感情会越来越甜，像热红酒一样暖。',
+    '旅行卡': '我们约定好一起去一个地方旅游吧！',
+    '惊喜卡': '某个清晨，你会收到一份意想不到的礼物。',
+    '幸运卡': '接下来一周，好事连连！',
+    '平安卡': '愿你和所爱之人，岁岁平安。',
+    '快乐卡': '每天醒来，都有值得微笑的理由。'
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const savedBackpack = localStorage.getItem('backpack');
+    const savedWishes = localStorage.getItem('christmas_wishes');
+    const shownPrompt = localStorage.getItem('has_shown_wish_prompt');
+    if (savedBackpack) backpack = JSON.parse(savedBackpack);
+    if (savedWishes) wishesSent = JSON.parse(savedWishes);
+    if (shownPrompt === 'true') hasShownWishPrompt = true;
+    updateBackpackBadge();
+
+    // 绑定 ❤️ 首页彩蛋
+    let heartClickCount = 0;
+    document.getElementById('heart-icon').addEventListener('click', () => {
+      heartClickCount++;
+      if (heartClickCount >= 2) {
+        showUnifiedMessage('💘', '心动彩蛋', '你怎么知道我在这里呀～');
+        heartClickCount = 0;
+      }
+    });
+
+    // 绑定未完待续 ❤️ 彩蛋
+    const secretHearts = document.querySelectorAll('.secret-heart');
+let revealedSet = new Set(); // 仅用于本次互动，不存 localStorage
+
+secretHearts.forEach(span => {
+  span.addEventListener('dblclick', function() {
+    if (this.textContent !== '❤️') return; // 已揭示则忽略
+
+    const num = this.dataset.num;
+    this.textContent = num;
+    this.style.fontSize = '1.8rem';
+    this.style.fontWeight = 'bold';
+    this.style.color = '#d4af37';
+    revealedSet.add(num);
+
+    // 检查是否集齐 520
+    if (revealedSet.has('5') && revealedSet.has('2') && revealedSet.has('0')) {
+      setTimeout(() => {
+        showUnifiedMessage('💞', '终极彩蛋', '我永远喜欢 LXW ❤️');
+
+        // ✅ 关键：1秒后恢复为 ❤️
+        setTimeout(() => {
+          secretHearts.forEach(el => {
+            el.textContent = '❤️';
+            el.style.fontSize = '';
+            el.style.fontWeight = '';
+            el.style.color = '';
+          });
+          revealedSet.clear(); // 清空，允许重新玩
+        }, 1000);
+      }, 300);
+    }
+  });
+});
+  });
+
+  // ========== 飘雪 ==========
+  const snowflakes = document.getElementById('snowflakes');
+  for (let i = 0; i < 50; i++) {
+    const snow = document.createElement('div');
+    snow.innerHTML = '❄';
+    snow.style.position = 'absolute';
+    snow.style.top = '-20px';
+    snow.style.left = Math.random() * 100 + 'vw';
+    snow.style.fontSize = (Math.random() * 10 + 10) + 'px';
+    snow.style.opacity = Math.random() * 0.5 + 0.3;
+    snow.style.animation = `fall ${Math.random() * 5 + 5}s linear infinite`;
+    snow.style.color = '#fff';
+    snowflakes.appendChild(snow);
+  }
+  document.head.insertAdjacentHTML('beforeend', `
+    <style>@keyframes fall { to { transform: translateY(105vh) rotate(360deg); } }</style>
+  `);
+
+  // ========== 书页滑动 ==========
+  const pagesContainer = document.getElementById('pagesContainer');
+  const totalPageCount = pagesContainer.children.length;
+  let currentPage = 0;
+
+  function updateSlider() {
+    pagesContainer.style.transform = `translateX(-${currentPage * 100}%)`;
+    updateDots();
+
+    const isLastPage = currentPage === totalPageCount - 1;
+    document.getElementById('close-book').style.display = isLastPage ? 'inline-block' : 'none';
+  }
+
+  function createDots() {
+    const dotsContainer = document.getElementById('navDots');
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < totalPageCount; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      dot.addEventListener('click', () => {
+        currentPage = i;
+        updateSlider();
+      });
+      dotsContainer.appendChild(dot);
+    }
+    updateDots();
+  }
+
+  function updateDots() {
+    document.querySelectorAll('.dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentPage);
+    });
+  }
+
+  const slider = document.getElementById('bookSlider');
+  let isDragging = false, startX = 0, currentX = 0;
+  slider.addEventListener('mousedown', startDrag);
+  slider.addEventListener('touchstart', e => startDrag(e.touches[0]), { passive: true });
+
+  function startDrag(e) {
+    isDragging = true;
+    startX = e.clientX || e.touches?.[0].clientX;
+    currentX = startX;
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('touchmove', onDrag, { passive: true });
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchend', endDrag);
+  }
+
+  function onDrag(e) {
+    if (!isDragging) return;
+    currentX = e.clientX || e.touches?.[0].clientX;
+  }
+
+  function endDrag() {
+    if (!isDragging) return;
+    const diff = startX - currentX;
+    const threshold = 50;
+    if (Math.abs(diff) > threshold) {
+      if (diff > 0 && currentPage < totalPageCount - 1) currentPage++;
+      else if (diff < 0 && currentPage > 0) currentPage--;
+    }
+    updateSlider();
+    isDragging = false;
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('touchmove', onDrag);
+    document.removeEventListener('mouseup', endDrag);
+    document.removeEventListener('touchend', endDrag);
+  }
+
+  createDots();
+  updateSlider();
+
+  // ========== 视图切换函数 ==========
+  function showBookView() {
+    document.getElementById('book-section').style.display = 'block';
+    document.getElementById('card-section').style.display = 'none';
+    document.getElementById('open-book-btn').style.display = 'none';
+    document.getElementById('open-card-btn').style.display = 'inline-block';
+  }
+
+  function showCardView() {
+    document.getElementById('book-section').style.display = 'none';
+    document.getElementById('card-section').style.display = 'block';
+    document.getElementById('open-book-btn').style.display = 'inline-block';
+    document.getElementById('open-card-btn').style.display = 'none';
+  }
+
+  function closeBook() {
+    showCardView();
+  }
+
+  function openBookFromToolbar() {
+    showBookView();
+    currentPage = totalPageCount - 1;
+    updateSlider();
+  }
+
+  function openCardFromToolbar() {
+    showCardView();
+  }
+
+  // ========== 控制按钮 ==========
+  document.getElementById('start-btn').onclick = () => {
+    document.getElementById('intro').style.display = 'none';
+    document.getElementById('main').style.display = 'block';
+    document.getElementById('bgm').play().catch(() => {});
+    showBookView();
+  };
+
+  function goHome() {
+    document.getElementById('main').style.display = 'none';
+    document.getElementById('intro').style.display = 'block';
+  }
+
+  let isPlaying = true;
+  function toggleMusic() {
+    const bgm = document.getElementById('bgm');
+    const btn = document.getElementById('music-btn');
+    if (isPlaying) {
+      bgm.pause();
+      btn.textContent = '🔊 播放音乐';
+    } else {
+      bgm.play();
+      btn.textContent = '🔇 暂停音乐';
+    }
+    isPlaying = !isPlaying;
+  }
+
+  // ========== 全局提示 ==========
+  function showUnifiedMessage(icon, type, message, duration = 1500) {
+    const el = document.getElementById('wish-message');
+    el.innerHTML = `
+      <div style="font-size: 2.2rem; margin-bottom: 0.4rem;">${icon}</div>
+      <div style="font-size: 1.3rem; margin-bottom: 0.6rem; color: #ffd700;">${type}</div>
+      <div style="font-size: 1.1rem; line-height: 1.5;">${message}</div>
+    `;
+    el.style.background = 'linear-gradient(135deg, #8B0000, #A52A2A)';
+    el.style.opacity = '1';
+    setTimeout(() => el.style.opacity = '0', duration);
+  }
+
+  // ========== 抽卡系统 ==========
+  function drawCard() {
+    const type = blessingTypes[Math.floor(Math.random() * blessingTypes.length)];
+    const icon = cardIcons[type];
+    const message = blessingMessages[type];
+
+    backpack[type] = (backpack[type] || 0) + 1;
+    localStorage.setItem('backpack', JSON.stringify(backpack));
+
+    showUnifiedMessage(icon, type, message);
+    checkCompletion();
+  }
+
+  function checkCompletion() {
+    const hasAll = blessingTypes.every(type => backpack[type] && backpack[type] > 0);
+    const badge = document.getElementById('backpack-badge');
+    if (hasAll) {
+      badge.style.display = 'flex';
+      if (!hasShownWishPrompt) {
+        showUnifiedMessage('🎉', '集齐啦！', '恭喜！你集齐了所有祝福！\n快去背包里合成愿望吧～');
+        hasShownWishPrompt = true;
+        localStorage.setItem('has_shown_wish_prompt', 'true');
+      }
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  function updateBackpackBadge() {
+    const hasAll = blessingTypes.every(type => backpack[type] && backpack[type] > 0);
+    const badge = document.getElementById('backpack-badge');
+    if (hasAll && !hasShownWishPrompt) {
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  // ========== 愿望表单 ==========
+  function showWishForm() {
+    document.getElementById('backpack-modal').style.display = 'none';
+    document.getElementById('wish-form-modal').style.display = 'flex';
+  }
+
+  function closeWishForm() {
+    document.getElementById('wish-form-modal').style.display = 'none';
+  }
+
+  async function submitWish() {
+    const wishText = document.getElementById('user-wish').value.trim();
+    if (!wishText) {
+      alert('请写下你的愿望再发送 ❤️');
+      return;
+    }
+
+    try {
+      blessingTypes.forEach(type => {
+        if (backpack[type] > 0) backpack[type]--;
+      });
+      localStorage.setItem('backpack', JSON.stringify(backpack));
+      hasShownWishPrompt = false;
+      localStorage.removeItem('has_shown_wish_prompt');
+
+      await emailjs.send(
+        'service_Asa',
+        'template_whisper',
+        { user_wish: wishText },
+        'US_Rmmi-EkRTHl4bO'
+      );
+
+      wishesSent.push(wishText);
+      localStorage.setItem('christmas_wishes', JSON.stringify(wishesSent));
+
+      showUnifiedMessage('💌', '愿望已发送', 'LXW 会收到这份心意～');
+      closeWishForm();
+      document.getElementById('user-wish').value = '';
+      updateBackpackBadge();
+      document.getElementById('backpack-badge').style.display = 'none';
+
+    } catch (err) {
+      console.error('发送失败:', err);
+      showUnifiedMessage('❌', '发送失败', '愿望发送失败，找那个笨蛋,他代码出问题了。');
+    }
+  }
+
+  // ========== 背包 & 愿望历史 ==========
+  function showBackpack() {
+    const content = document.getElementById('backpack-content');
+    const composeBtn = document.getElementById('compose-wish-btn');
+    content.innerHTML = '';
+
+    let hasAny = false;
+    for (const type of blessingTypes) {
+      const count = backpack[type] || 0;
+      if (count > 0) {
+        hasAny = true;
+        const cardEl = document.createElement('div');
+        cardEl.className = 'backpack-card';
+        cardEl.innerHTML = `
+          <div>${cardIcons[type]}</div>
+          <div class="count">${count}</div>
+          <div class="type">${type}</div>
+        `;
+
+        // ✅ 仅点击触发提示（移除 mouseenter）
+        cardEl.addEventListener('click', () => {
+          showUnifiedMessage(cardIcons[type], type, blessingMessages[type]);
+        });
+
+        content.appendChild(cardEl);
+      }
+    }
+
+    const hasAll = blessingTypes.every(type => backpack[type] && backpack[type] > 0);
+    composeBtn.style.display = hasAll ? 'inline-block' : 'none';
+
+    if (!hasAny) {
+      content.innerHTML = '<p style="color: #888;">背包空空如也，快去抽卡吧！</p>';
+    }
+
+    document.getElementById('backpack-modal').style.display = 'flex';
+    document.getElementById('backpack-badge').style.display = 'none';
+    document.getElementById('wish-message').style.zIndex = '3200';
+  }
+
+  function closeBackpack() {
+    document.getElementById('backpack-modal').style.display = 'none';
+    document.getElementById('wish-message').style.zIndex = '1000';
+  }
+
+  function showWishHistory() {
+    const content = document.getElementById('wish-history-content');
+    if (wishesSent.length === 0) {
+      content.innerHTML = '<p style="color: #888;">还没有许过愿望哦～</p>';
+    } else {
+      content.innerHTML = wishesSent.map((wish, i) => 
+        `<div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px dashed #eee;">
+          <strong>愿望 ${i + 1}:</strong><br>
+          <span style="color: #555;">${wish}</span>
+        </div>`
+      ).join('');
+    }
+    document.getElementById('wish-history-modal').style.display = 'flex';
+  }
+
+  function closeWishHistory() {
+    document.getElementById('wish-history-modal').style.display = 'none';
+  }
+
+  // ========== 横屏检测 ==========
+  function checkOrientation() {
+    const hint = document.getElementById('rotate-hint');
+    if (window.innerHeight > window.innerWidth && /Android|iPhone|iPad/i.test(navigator.userAgent)) {
+      hint.style.display = 'flex';
+    } else {
+      hint.style.display = 'none';
+    }
+  }
+
+  window.addEventListener('resize', checkOrientation);
+  checkOrientation();
+  </script>
+</body>
+</html>
